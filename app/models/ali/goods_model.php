@@ -96,7 +96,7 @@ class goods_model extends BaseModel {
 	 * select
 	 * @param array $data
 	 */
-	public function selectGoods($data){
+	public function selectGoods($data=array()){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		

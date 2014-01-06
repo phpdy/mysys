@@ -32,16 +32,28 @@ class BaseModel extends Model {
 	
 	/**
 	 * 根据ID号查询结果
-	 * @param string $sql
+	 * @param string $table
 	 * @param int $id
 	 */
-	public function findObjectById($sql,$id){
+	public function findOneById($table,$id){
+		$sql = "select * from $table where id = ?" ;
 		$list = $this->querySQL($sql,array($id)) ;
 		
 		if (!is_array($list) || sizeof($list)!=1){
 			return array() ;
 		}
 		return $list[0] ;
+	}
+	
+	/**
+	 * 查询表所有数据
+	 * @param string $table
+	 */
+	public function findAllByTablename($table){
+		$sql = "select * from $table order by id" ;
+		$list = $this->querySQL($sql,array($id)) ;
+		
+		return $list ;
 	}
 
 	/**

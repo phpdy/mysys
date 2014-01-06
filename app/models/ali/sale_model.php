@@ -1,27 +1,27 @@
 <?php
 
-class buy_model extends BaseModel {
+class sale_model extends BaseModel {
 	protected $dbIndex = 'sys';
 	
 	/**
 	 * insert
 	 * @param array $data
 	 */
-	public function insertBuy($data){
+	public function insertSale($data){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$goodsid 	= $data['goodsid'] ;
-		$name 	= $data['name'] ;
-		$info 	= $data['info'] ;
-		$price 	= $data['price'] ;
-		$num 	= $data['num'] ;
-		$fare 	= $data['fare'] ;
-		$date 	= $data['date'] ;
+		$buyer 		= $data['buyer'] ;
+		$buyer_ww 	= $data['buyer_ww'] ;
+		$price 		= $data['price'] ;
+		$num 		= $data['num'] ;
+		$fare 		= $data['fare'] ;
+		$date 		= $data['date'] ;
 		$log .= "|$goodsid,$name,$info,$price,$num,$fare,$date" ;
 		
-		$sql = "insert into ali_buy (goodsid,name,info,price,num,fare,date) values(?,?,?,?,?,?,?)";
-		$params = array($goodsid,$name,$info,$price,$num,$fare,$date) ;
+		$sql = "insert into ali_sale (goodsid,buyer,buyer_ww,num,price,fare,date) values(?,?,?,?,?,?,?)";
+		$params = array($goodsid,$buyer,$buyer_ww,$price,$num,$fare,$date) ;
 		$result = $this->excuteSQL($sql,$params) ;
 		$log .= "|$sql" ;
 		
@@ -35,12 +35,12 @@ class buy_model extends BaseModel {
 	 * update
 	 * @param array $data
 	 */
-	public function updateBuy($data){
+	public function updateSale($data){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$id = $data['id'] ;
-		$sql = "update ali_buy set id=? ";
+		$sql = "update ali_sale set id=? ";
 		$params = array($id) ;
 		$log .= "|$id" ;
 		if (isset($data['goodsid'])){
@@ -48,15 +48,15 @@ class buy_model extends BaseModel {
 			$params[] = $data['goodsid'] ;
 			$log .= ",$data[goodsid]" ;
 		}
-		if (isset($data['name'])){
-			$sql .= ",name=?";
-			$params[] = $data['name'] ;
-			$log .= ",$data[name]" ;
+		if (isset($data['buyer'])){
+			$sql .= ",buyer=?";
+			$params[] = $data['buyer'] ;
+			$log .= ",$data[buyer]" ;
 		}
-		if (isset($data['info'])){
-			$sql .= ",info=?";
-			$params[] = $data['info'] ;
-			$log .= ",$data[info]" ;
+		if (isset($data['buyer_ww'])){
+			$sql .= ",buyer_ww=?";
+			$params[] = $data['buyer_ww'] ;
+			$log .= ",$data[buyer_ww]" ;
 		}
 		if (isset($data['price'])){
 			$sql .= ",price=?";
@@ -93,12 +93,12 @@ class buy_model extends BaseModel {
 	 * select
 	 * @param int $id
 	 */
-	public function selectBuyById($id){
+	public function selectSaleById($id){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$params = array($id) ;
-		$sql = "select * from ali_buy where id = ?" ;
+		$sql = "select * from ali_sale where id = ?" ;
 		
 		$result = $this->getOne($sql,$params) ;
 		$log .= "|$sql" ;
@@ -113,29 +113,29 @@ class buy_model extends BaseModel {
 	 * select
 	 * @param array $data
 	 */
-	public function selectBuy($data=array()){
+	public function selectSale($data=array()){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$params = array() ;
-		$sql = "SELECT buy.*,goods.name goodsname,who.name whoname FROM ali_buy buy,ali_goods goods,ali_wholesaler who WHERE buy.goodsid=goods.id AND goods.whoid=who.id " ;
+		$sql = "SELECT sale.*,goods.name goodsname,who.name whoname FROM ali_sale sale,ali_goods goods,ali_wholesaler who WHERE sale.goodsid=goods.id AND goods.whoid=who.id " ;
 	
-		if (!empty($data['goodsid'])){
-			$sql .= "and buy.goodsid=? ";
+		if (isset($data['goodsid'])){
+			$sql .= "and sale.goodsid=? ";
 			$params[] = $data['goodsid'] ;
 			$log .= ",$data[goodsid]" ;
 		}
 		if (isset($data['name'])){
-			$sql .= "and buy.name=? ";
+			$sql .= "and sale.name=? ";
 			$params[] = $data['name'] ;
 			$log .= ",$data[name]" ;
 		}
 		if (isset($data['date'])){
-			$sql .= "and date(buy.date)=? ";
+			$sql .= "and date(sale.date)=? ";
 			$params[] = $data['date'] ;
 			$log .= ",$data[date]" ;
 		}
-		$sql .= "order by who.id, goods.id, buy.id" ;
+		$sql .= "order by who.id, goods.id, sale.id" ;
 		$result = $this->getAll($sql,$params) ;
 		$log .= "|$sql" ;
 		
