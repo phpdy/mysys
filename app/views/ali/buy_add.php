@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <link rel="StyleSheet" href="manager/css/style.css" type="text/css"/>
+<script language="javascript" type="text/javascript" src="js/Calendar3.js" ></script>
 </head>
 <body>
 
@@ -30,7 +31,7 @@
                     <tr><td class="title"><b>单价:</b></td><td><input type="text" name="price" size=40></td></tr>
                     <tr><td class="title"><b>数量:</b></td><td><input type="text" name="num" size=40></td></tr>
                     <tr><td class="title"><b>运费:</b></td><td><input type="text" name="fare" size=40></td></tr>
-                    <tr><td class="title"><b>日期:</b></td><td><input type="text" name="date" size=40></td></tr>
+                    <tr><td class="title"><b>日期:</b></td><td><input type="text" name="date" size=40 onclick="new Calendar().show(this);"></td></tr>
                     <tr><td colspan="2"><input type="submit" value="提  交" name="sub" class="sub-btn"></td></tr>
                     </tbody>
                 </table>
