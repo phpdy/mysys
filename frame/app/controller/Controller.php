@@ -32,7 +32,8 @@ class Controller extends Object {
 	public function init(){
 		
 	}
-	public function initModel($model,$dir){
+	public function initModel($model,$dir=""){
+		$dir = empty($dir)?$this->dir:$dir ;
 		return Import::importModel($model,$dir) ;
 	}
 }
