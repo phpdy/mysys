@@ -1,7 +1,7 @@
 <?php
 
 class buy_model extends BaseModel {
-	protected $dbIndex = 'sys';
+	protected $dbIndex = 'ali';
 	
 	/**
 	 * insert

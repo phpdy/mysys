@@ -1,7 +1,7 @@
 <?php
 
 class who_model extends BaseModel {
-	protected $dbIndex = 'sys';
+	protected $dbIndex = 'ali';
 	
 	/**
 	 * insert
