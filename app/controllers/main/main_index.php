@@ -2,15 +2,15 @@
 
 class main_index extends BaseController {
 	public function init(){
-		$this->model = $this->initModel('user_model','admin');
-		$this->module = $this->initModel('module_model','admin');
-		$this->system = $this->initModel('system_model','admin');
+		$this->user_model = $this->initModel('user_model','admin');
+		$this->module_model = $this->initModel('module_model','admin');
+		$this->system_model = $this->initModel('system_model','admin');
 	}
 	//首页
 	public function defaultAction(){
 		@session_start();
 		if (!empty($_SESSION[FinalClass::$_session_user]) && is_array($_SESSION [FinalClass::$_session_user])){
-			$system = $this->system->selectSystem();
+			$system = $this->system_model->selectSystem();
 			$this->view->assign('system',$system) ;
 			$this->view->display('index.php') ;
 			die();
@@ -26,7 +26,7 @@ class main_index extends BaseController {
 		$username = Lib::safeS ( @$_POST ['username'] );
 		$password = Lib::safeS ( @$_POST ['password'] );
 		$log .= "|$username,$password" ;
-		$userinfo = $this->model->getUserInfo ( $username );
+		$userinfo = $this->user_model->getUserInfo ( $username );
 		if ($userinfo) {
 //			$password = md5($password) ;
 			if ($userinfo ['password'] !=  $password ) {
@@ -57,11 +57,11 @@ class main_index extends BaseController {
 		@session_start ();
 		$userid = $_SESSION [FinalClass::$_session_user]['id'] ;
 		$log.="|$userid" ;
-		$rank = $this->userinfo->selectUserRankList($userid);
+		$rank = $this->userrole_model->selectUserRankList($userid);
 //		$rank = $this->module->selectModule();
 		//admin用户拥有所有权限
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$_rank = $this->module->selectModule();
+			$_rank = $this->module_model->selectModule();
 			$rank = array_merge($rank,$_rank) ;
 		}
 //		$rank = array_unique($rank) ;
@@ -74,7 +74,7 @@ class main_index extends BaseController {
 	}
 	public function topAction(){
 		@session_start();
-		$system = $this->system->selectSystem();
+		$system = $this->system_model->selectSystem();
 		$this->view->assign('system',$system) ;
 		$this->view->display('top.php') ;
 	}

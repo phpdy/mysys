@@ -1,10 +1,10 @@
 <?php
 
 class Controller extends Object {
-	public $dir = "" ;
-	public $model ;
+	protected $dir = "" ;
+	protected $model ;
 	
-	public $view ;
+	protected $view ;
 	
 	public function __construct(){
 		//views

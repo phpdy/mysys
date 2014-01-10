@@ -3,14 +3,13 @@
 class admin_userrole extends BaseController {
 
 	public function init(){
-		$this->user = $this->initModel('user_model','admin');
-		$this->rolse = $this->initModel('rolse_model','admin');
-		$this->module = $this->initModel('module_model','admin');
+		$this->user_model = $this->initModel('user_model','admin');
+		$this->rolse_model = $this->initModel('rolse_model','admin');
 	}
 	//首页
 	public function addAction(){
-		$user_list = $this->user->getUserList() ;
-		$userinfo_list = $this->userinfo->selectUserinfo() ;
+		$user_list = $this->user_model->getUserList() ;
+		$userinfo_list = $this->userrole_model->selectUserinfo() ;
 		//剔除已添加的用户信息
 		foreach ($user_list as $key=>$user){
 			$userid = $user['id'] ;
@@ -26,10 +25,10 @@ class admin_userrole extends BaseController {
 //		$rolse_list = $this->rolse->selectRolse() ;
 		@session_start ();
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$rolse_list = $this->rolse->selectRolse() ;
+			$rolse_list = $this->rolse_model->selectRolse() ;
 		} else {
-			$rolseid = $this->userinfo->selectUserRolseList($this->getUserID()) ;
-			$rolse_list = $this->rolse->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
+			$rolseid = $this->userrole_model->selectUserRolseList($this->getUserID()) ;
+			$rolse_list = $this->rolse_model->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
 		}
 //		print_r($rolse_list);
 		$this->view->assign('rolse_list',$rolse_list) ;
@@ -51,7 +50,7 @@ class admin_userrole extends BaseController {
 		
 		//判断该用户角色是否创建
 		$data = array('userid'=>$userid);
-		$res = $this->userinfo->selectUserinfo($data);
+		$res = $this->userrole_model->selectUserinfo($data);
 		if (!empty($res)) {
 			echo '该用户角色已经创建';
 			exit;
@@ -63,7 +62,7 @@ class admin_userrole extends BaseController {
 			"userid"		=>	$userid,
 			"rolses"		=>	$rolses,
 		) ;
-		$result = $this->userinfo->insertUserinfo($rq) ;
+		$result = $this->userrole_model->insertUserinfo($rq) ;
 		$this->listAction();
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
@@ -73,11 +72,11 @@ class admin_userrole extends BaseController {
 	public function listAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
-		$result = $this->userinfo->selectUserinfo() ;
+		$result = $this->userrole_model->selectUserinfo() ;
 		$this->view->assign('list',$result) ;
-		$user_list = $this->user->getUserList() ;
+		$user_list = $this->user_model->getUserList() ;
 		$this->view->assign('user_list',$user_list) ;
-		$rolse_list = $this->rolse->selectRolse() ;
+		$rolse_list = $this->rolse_model->selectRolse() ;
 		$this->view->assign('rolse_list',$rolse_list) ;
 		$this->view->display('userrole_list.php');
 	}
@@ -90,23 +89,23 @@ class admin_userrole extends BaseController {
 	
 		@session_start ();
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$show_rolelist = $this->rolse->selectRolse() ;
+			$show_rolelist = $this->rolse_model->selectRolse() ;
 		} else {
-			$rolseid = $this->userinfo->selectUserRolseList($this->getUserID()) ;
-			$show_rolelist = $this->rolse->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
+			$rolseid = $this->userrole_model->selectUserRolseList($this->getUserID()) ;
+			$show_rolelist = $this->rolse_model->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
 		}
 		
 		//获取要修改用户的角色列表
-		$res = $this->userinfo->selectUserinfo(array('id'=>$id));
+		$res = $this->userrole_model->selectUserinfo(array('id'=>$id));
 		if (empty($res[0]['rolses'])) {
 			$rolelist = '';
 		}else {
-			$rolelist = $this->rolse->selectRolse(array('ids'=>$res[0]['rolses']));
+			$rolelist = $this->rolse_model->selectRolse(array('ids'=>$res[0]['rolses']));
 		}
 		
 		$userid = $res[0]['userid'];
 		//获取修改用户的username和realname
-		$usernames = $this->user->getusername($userid);
+		$usernames = $this->user_model->getusername($userid);
 		
 		$this->view->assign('id', $id);
 		$this->view->assign('usernames', $usernames);
@@ -133,7 +132,7 @@ class admin_userrole extends BaseController {
 				);
 			
 		
-		$this->userinfo->updateUserinfo($data);
+		$this->userrole_model->updateUserinfo($data);
 		
 		$this->listAction();
 		
@@ -143,7 +142,7 @@ class admin_userrole extends BaseController {
 	public function delAction() {
 		$id = $_GET['id'];
 		$data = array('id'=>$id);
-		$this->userinfo->delUserinfo($data);
+		$this->userrole_model->delUserinfo($data);
 		
 		$this->listAction();
 	}

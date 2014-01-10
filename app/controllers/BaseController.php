@@ -1,14 +1,15 @@
 <?php
 
 class BaseController extends Controller {
-	public $model ;
+	protected $model ;
+	protected $userrole_model ;
 	protected $start ;//起始时间
 	
 	function __construct(){
 		$this->dir = $_GET['dir'] ;
 		parent::__construct() ;
 		$this->start = microtime(true)*1000 ;
-		$this->userinfo = $this->initModel('userrole_model','admin');
+		$this->userrole_model = $this->initModel('userrole_model','admin');
 		$this->model = new BaseModel() ;
 	}
 	

@@ -9,7 +9,7 @@ class admin_rolse extends BaseController {
 	//首页
 	public function addAction(){
 //		$result = $this->module_model->selectModule() ;
-		$result = $this->userinfo->selectUserRankList($this->getUserID()) ;
+		$result = $this->userrole_model->selectUserRankList($this->getUserID()) ;
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
 			$result = $this->module_model->selectModule();
 		}
@@ -76,7 +76,7 @@ class admin_rolse extends BaseController {
 		$this->view->assign('rolse',$result[0]) ;
 		
 //		$result = $this->module_model->selectModule(array('state'=>1)) ;
-		$result = $this->userinfo->selectUserRankList($this->getUserID()) ;
+		$result = $this->userrole_model->selectUserRankList($this->getUserID()) ;
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
 			$result = $this->module_model->selectModule();
 		}
