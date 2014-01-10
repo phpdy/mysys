@@ -52,7 +52,7 @@ class Model extends Object {
 	 */
 	public function excuteSQL($sql,$params=array()){
 		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__."|$sql|" ;
+		$log = __CLASS__."|".__FUNCTION__ ;
 		try {
 			$stmt = $this->pdo->prepare($sql);
 			if(is_array($params) && sizeof($params)>0 ){
@@ -63,6 +63,8 @@ class Model extends Object {
 				}
 			}
 			$result = $stmt->execute();
+			
+			$log .= "|$sql > ".implode(",", $params) ;
 			$log .= "|$result" ;
 			$log .= "|".(int)(microtime(true)*1000-$start) ;
 			Log::info($log) ;
@@ -80,19 +82,19 @@ class Model extends Object {
 	 */
 	public function querySQL($sql,$params=array()){
 		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__."|$sql|" ;
+		$log = __CLASS__."|".__FUNCTION__ ;
 		try {
 			$stmt = $this->pdo->prepare($sql);
 			if(is_array($params) && sizeof($params)>0 ){
 				$params = array_values($params) ;
 				foreach ($params as $key=>$value){
 					$stmt->bindParam($key+1,$value);
-					$log.="$value," ;
 				}
 			}
 			$stmt->execute();
 			$list = $stmt->fetchAll(PDO::FETCH_BOTH);
 			
+			$log .= "|$sql > ".implode(",", $params) ;
 			$log .= "|".sizeof($list) ;
 			$log .= "|".(int)(microtime(true)*1000-$start) ;
 			Log::info($log) ;
