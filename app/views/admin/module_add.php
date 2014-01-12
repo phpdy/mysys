@@ -17,7 +17,7 @@
             <div id="gamemain">
                 <table>
                     <tbody>
-                    <tr><td class="title"><b>模块名:</b></td><td><input type="text" name="name" size=80></td></tr>
+                    <tr><td class="title"><b>模块名:</b></td><td><input type="text" name="name" size=30></td></tr>
                     <tr><td class="title"><b>模块链接:</b></td><td><input type="text" name="url" size=80></td></tr>
                     <tr><td class="title"><b>模块类型:</b></td><td><input type="radio" checked="" id="1" value="1" name="type"><label for="1">目录</label> <input type="radio" id="2" value="2" name="type"><label for="2">文件</label></td></tr>
                     <tr>

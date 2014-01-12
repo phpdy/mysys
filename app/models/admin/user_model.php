@@ -12,7 +12,7 @@ class user_model extends BaseModel {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$log .= "|$username" ;
-		$sql = "select * from user where name=?";
+		$sql = "select * from " . $this->da_pre . "_user where name=?";
 		$result = $this->getOne($sql,array($username)) ;
 		$log .= "|$sql" ;
 		
@@ -29,7 +29,7 @@ class user_model extends BaseModel {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$sql = "select * from user order by name";
+		$sql = "select * from " . $this->da_pre . "_user order by name";
 		$result = $this->getAll($sql) ;
 		$log .= "|$sql" ;
 		
@@ -47,7 +47,7 @@ class user_model extends BaseModel {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$sql = "update user set password=?  where id=? ";
+		$sql = "update " . $this->da_pre . "_user set password=?  where id=? ";
 		$params = array($password,$userid) ;
 		$result = $this->excuteSQL($sql,$params) ;
 		$log .= "|$sql";
@@ -69,7 +69,7 @@ class user_model extends BaseModel {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		$log .= "|$name,$username,$password";
 
-		$sql = "INSERT INTO user (name,password,username,registdate) VALUES (?,?,?,?)";
+		$sql = "INSERT INTO " . $this->da_pre . "_user (name,password,username,registdate) VALUES (?,?,?,?)";
 		$params = array($name,$username,$password,date("Y-m-d h:i:s")) ;
 		$result = $this->excuteSQL($sql,$params) ;
 		
@@ -86,7 +86,7 @@ class user_model extends BaseModel {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		$log .= '|' . $userid ;
 		
-		$sql = "SELECT * FROM user WHERE id = ?";
+		$sql = "SELECT * FROM " . $this->da_pre . "_user WHERE id = ?";
 		$result = $this->getOne($sql,array($userid));
 		
 		$log .= '|' . $sql;
@@ -105,7 +105,7 @@ class user_model extends BaseModel {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		$log .= '|' . $userid ;
 		
-		$sql = "delete FROM user WHERE id = ?";
+		$sql = "delete FROM " . $this->da_pre . "_user WHERE id = ?";
 		$result = $this->findObjectById($sql, $userid) ;
 		
 		$log .= '|' . $sql;

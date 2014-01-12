@@ -3,12 +3,13 @@
 class admin_userrole extends BaseController {
 
 	public function init(){
-		$this->user_model = $this->initModel('user_model','admin');
-		$this->rolse_model = $this->initModel('rolse_model','admin');
+		$this->user = $this->initModel('user_model','admin');
+		$this->rolse = $this->initModel('rolse_model','admin');
+		$this->module = $this->initModel('module_model','admin');
 	}
 	//首页
 	public function addAction(){
-		$user_list = $this->user_model->getUserList() ;
+		$user_list = $this->user->getUserList() ;
 		$userinfo_list = $this->userrole_model->selectUserinfo() ;
 		//剔除已添加的用户信息
 		foreach ($user_list as $key=>$user){
@@ -25,10 +26,10 @@ class admin_userrole extends BaseController {
 //		$rolse_list = $this->rolse->selectRolse() ;
 		@session_start ();
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$rolse_list = $this->rolse_model->selectRolse() ;
+			$rolse_list = $this->rolse->selectRolse() ;
 		} else {
 			$rolseid = $this->userrole_model->selectUserRolseList($this->getUserID()) ;
-			$rolse_list = $this->rolse_model->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
+			$rolse_list = $this->rolse->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
 		}
 //		print_r($rolse_list);
 		$this->view->assign('rolse_list',$rolse_list) ;
@@ -63,7 +64,9 @@ class admin_userrole extends BaseController {
 			"rolses"		=>	$rolses,
 		) ;
 		$result = $this->userrole_model->insertUserinfo($rq) ;
-		$this->listAction();
+		if($result){
+			$this->listAction();
+		}
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
 	}
@@ -74,11 +77,14 @@ class admin_userrole extends BaseController {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		$result = $this->userrole_model->selectUserinfo() ;
 		$this->view->assign('list',$result) ;
-		$user_list = $this->user_model->getUserList() ;
+		$user_list = $this->user->getUserList() ;
 		$this->view->assign('user_list',$user_list) ;
-		$rolse_list = $this->rolse_model->selectRolse() ;
+		$rolse_list = $this->rolse->selectRolse() ;
 		$this->view->assign('rolse_list',$rolse_list) ;
 		$this->view->display('userrole_list.php');
+		
+		$log .= "|".(int)(microtime(true)*1000-$start) ;
+		Log::logBusiness($log) ;
 	}
 
 	//修改用户角色
@@ -89,10 +95,10 @@ class admin_userrole extends BaseController {
 	
 		@session_start ();
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$show_rolelist = $this->rolse_model->selectRolse() ;
+			$show_rolelist = $this->rolse->selectRolse() ;
 		} else {
 			$rolseid = $this->userrole_model->selectUserRolseList($this->getUserID()) ;
-			$show_rolelist = $this->rolse_model->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
+			$show_rolelist = $this->rolse->selectRolse(array('ids'=>$rolseid[0]['rolses'])) ;
 		}
 		
 		//获取要修改用户的角色列表
@@ -100,12 +106,12 @@ class admin_userrole extends BaseController {
 		if (empty($res[0]['rolses'])) {
 			$rolelist = '';
 		}else {
-			$rolelist = $this->rolse_model->selectRolse(array('ids'=>$res[0]['rolses']));
+			$rolelist = $this->rolse->selectRolse(array('ids'=>$res[0]['rolses']));
 		}
 		
 		$userid = $res[0]['userid'];
 		//获取修改用户的username和realname
-		$usernames = $this->user_model->getusername($userid);
+		$usernames = $this->user->getusername($userid);
 		
 		$this->view->assign('id', $id);
 		$this->view->assign('usernames', $usernames);
