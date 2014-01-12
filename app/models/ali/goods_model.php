@@ -2,6 +2,8 @@
 
 class goods_model extends BaseModel {
 	protected $dbIndex = 'ali';
+	protected $dbTable = "ali_goods" ;
+	protected $items = array('whoid','name','info') ;
 	
 	/**
 	 * insert

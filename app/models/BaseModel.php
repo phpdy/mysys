@@ -40,7 +40,6 @@ class BaseModel extends Model {
 	 */
 	protected function getAll($sql,$params=array()){
 		$list = $this->querySQL($sql,$params) ;
-		
 		return $list ;
 	}
 	
@@ -48,7 +47,7 @@ class BaseModel extends Model {
 	 * 根据ID号查询结果
 	 * @param int $id
 	 */
-	public function getById($id){
+	public function queryById($id){
 		$sql = "select * from ".$this->dbTable." where id = ?" ;
 		$list = $this->querySQL($sql,array($id)) ;
 		
@@ -59,20 +58,9 @@ class BaseModel extends Model {
 	}
 	
 	/**
-	 * 查询表所有数据
-	 * @param int $lenth
-	 * @param int $start
-	 */
-	public function getAllData($lenth=30,$start=0){
-		$sql = "select * from ".$this->dbTable." order by id limit $start,$lenth" ;
-		$list = $this->querySQL($sql,array()) ;
-		return $list ;
-	}
-
-
-	/**
 	 * insert
 	 * @param array $data
+	 * @return int
 	 */
 	public function insert($data) {
 		$start = microtime(true)*1000 ;
@@ -105,10 +93,12 @@ class BaseModel extends Model {
 	}
 	
 	/**
+	 * 
 	 * 更新信息
 	 * @param array $data
+	 * @return int
 	 */
-	function update($data) {
+	public function update($data) {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
@@ -136,8 +126,10 @@ class BaseModel extends Model {
 	}
 	
 	/**
-	 * 查询
+	 * 
+	 * 按条件查询
 	 * @param array $data
+	 * @return array
 	 */
 	public function query($data=array()) {
 		$start = microtime(true)*1000 ;
@@ -158,7 +150,10 @@ class BaseModel extends Model {
 		if(!empty($k)){
 			$p1 = "and ".implode("and", $k) ;
 		}
-		$sql = "select * from ".$this->dbTable." where 1=1 $p1 order by id ";
+		$size = FinalClass::$_list_pagesize ;
+		$start = (empty($data['page'])?0:$data['page'])*$size ;
+		
+		$sql = "select * from ".$this->dbTable." where 1=1 $p1 order by id limit $start,$size";
 		$result = $this->excuteSQL($sql,$params) ;
 		
 		$log .= '|' . $sql." > ".implode(",", $params);
@@ -166,5 +161,40 @@ class BaseModel extends Model {
 		$log .= '|' . (int)(microtime(true)*1000-$start);
 		Log::logBehavior($log);
 		return $result;	
+	}
+	/**
+	 * 统计总数
+	 * @param array $data
+	 * @return int
+	 */
+	public function queryCount($data=array()) {
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+	
+		$k = array() ;
+		$params = array() ;
+		foreach ($data as $key=>$value){
+			if(empty($value)){
+				continue ;
+			}
+			if(in_array($key, $this->items)){
+				$k[] = " $key=? " ;
+				$params[] = $value ;
+			}
+		}
+		$p1 = "" ;
+		if(!empty($k)){
+			$p1 = "and ".implode("and", $k) ;
+		}
+		
+		$sql = "select count(*) count from ".$this->dbtable." where 1=1 $p1 ";
+		$result = $this->getOne($sql,$params) ;
+		$pages = (int)(($result['count'] - 1)/FinalClass::$_list_pagesize) + 1 ;
+		
+		$log .= '|' . $sql.";".implode(",", $params);
+		$log .= '|' . $pages;
+		$log .= '|' . (int)(microtime(true)*1000-$start);
+		Log::logBehavior($log);
+		return $pages;	
 	}
 }

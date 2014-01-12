@@ -2,6 +2,8 @@
 
 class sale_model extends BaseModel {
 	protected $dbIndex = 'ali';
+	protected $dbTable = "ali_sale" ;
+	protected $items = array('goodsid','buyer','buyer_ww','num','price','fare','date') ;
 	
 	/**
 	 * insert
@@ -18,7 +20,7 @@ class sale_model extends BaseModel {
 		$num 		= $data['num'] ;
 		$fare 		= $data['fare'] ;
 		$date 		= $data['date'] ;
-		$log .= "|$goodsid,$name,$info,$price,$num,$fare,$date" ;
+		$log .= "|$goodsid,$buyer,$buyer_ww,$price,$num,$fare,$date" ;
 		
 		$sql = "insert into ali_sale (goodsid,buyer,buyer_ww,num,price,fare,date) values(?,?,?,?,?,?,?)";
 		$params = array($goodsid,$buyer,$buyer_ww,$price,$num,$fare,$date) ;
