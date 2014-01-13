@@ -23,7 +23,8 @@ class Model extends Object {
 				$temp = "SET NAMES ".$config['charset'];
 				$this->pdo->exec($temp);
 			} catch (PDOException $e) {
-				exit('连接失败:'.$e->getMessage());
+				echo ('连接失败:'.$e->getMessage());
+//				exit('连接失败:'.$e->getMessage());
 			}
 		}
 	}
@@ -92,7 +93,7 @@ class Model extends Object {
 				}
 			}
 			$stmt->execute();
-			$list = $stmt->fetchAll(PDO::FETCH_BOTH);
+			$list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			
 			$log .= "|$sql > ".implode(",", $params) ;
 			$log .= "|".sizeof($list) ;
