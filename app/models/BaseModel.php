@@ -104,7 +104,7 @@ class BaseModel extends Model {
 		
 		$k = array() ;
 		$params = array() ;
-		
+		if(is_array($data))
 		foreach ($data as $key=>$value){
 			if(in_array($key, $this->items)){
 				$k[] = "$key=?" ;
@@ -124,6 +124,26 @@ class BaseModel extends Model {
 		Log::logBehavior($log);
 		return $result;	
 	}
+
+	/**
+	 * 
+	 * 删除
+	 * @param int $id
+	 * @return int
+	 */
+	public function delete($id) {
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+		
+		$sql = "delete FROM " . $this->dbTable . " WHERE id = ?";
+		$result = $this->excuteSQL($sql,array($id)) ;
+		
+		$log .= '|' . $sql ;
+		$log .= '|' . $result;
+		$log .= '|' . (int)(microtime(true)*1000-$start);
+		Log::logBehavior($log);
+		return $result;	
+	}
 	
 	/**
 	 * 
@@ -137,6 +157,7 @@ class BaseModel extends Model {
 
 		$k = array() ;
 		$params = array() ;
+		if(is_array($data))
 		foreach ($data as $key=>$value){
 			if(empty($value)){
 				continue ;
@@ -153,8 +174,8 @@ class BaseModel extends Model {
 		$size = FinalClass::$_list_pagesize ;
 		$start = (empty($data['page'])?0:$data['page'])*$size ;
 		
-		$sql = "select * from ".$this->dbTable." where 1=1 $p1 order by id limit $start,$size";
-		$result = $this->excuteSQL($sql,$params) ;
+		$sql = "select * from ".$this->dbTable." where ".$this->getWhere()." $p1 ".$this->getOrder()." limit $start,$size";
+		$result = $this->querySQL($sql,$params) ;
 		
 		$log .= '|' . $sql." > ".implode(",", $params);
 		$log .= '|' . $result;
@@ -162,6 +183,44 @@ class BaseModel extends Model {
 		Log::logBehavior($log);
 		return $result;	
 	}
+
+	/**
+	 * 
+	 * 按条件查询
+	 * @param array $data
+	 * @return array
+	 */
+	public function queryAll($data=array()) {
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+
+		$k = array() ;
+		$params = array() ;
+		if(is_array($data))
+		foreach ($data as $key=>$value){
+			if(empty($value)){
+				continue ;
+			}
+			if(in_array($key, $this->items)){
+				$k[] = " $key=? " ;
+				$params[] = $value ;
+			}
+		}
+		$p1 = "" ;
+		if(!empty($k)){
+			$p1 = "and ".implode("and", $k) ;
+		}
+		
+		$sql = "select * from ".$this->dbTable." where ".$this->getWhere()." $p1 ".$this->getOrder() ;
+		$result = $this->querySQL($sql,$params) ;
+		
+		$log .= '|' . $sql." > ".implode(",", $params);
+		$log .= '|' . $result;
+		$log .= '|' . (int)(microtime(true)*1000-$start);
+		Log::logBehavior($log);
+		return $result;	
+	}
+	
 	/**
 	 * 统计总数
 	 * @param array $data
@@ -187,7 +246,7 @@ class BaseModel extends Model {
 			$p1 = "and ".implode("and", $k) ;
 		}
 		
-		$sql = "select count(*) count from ".$this->dbtable." where 1=1 $p1 ";
+		$sql = "select count(*) count from ".$this->dbtable." where ".$this->getWhere()." $p1 ";
 		$result = $this->getOne($sql,$params) ;
 		$pages = (int)(($result['count'] - 1)/FinalClass::$_list_pagesize) + 1 ;
 		
@@ -197,4 +256,12 @@ class BaseModel extends Model {
 		Log::logBehavior($log);
 		return $pages;	
 	}
+	
+	protected function getWhere(){
+		return " 1=1 " ;
+	}
+	protected function getOrder(){
+		return "order by id" ;
+	}
+	
 }

@@ -8,10 +8,9 @@ class admin_rolse extends BaseController {
 	}
 	//首页
 	public function addAction(){
-//		$result = $this->module_model->selectModule() ;
-		$result = $this->userrole_model->selectUserRankList($this->getUserID()) ;
+		$result = $this->userrole_model->query(array('userid'=>$this->getUserID())) ;
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$result = $this->module_model->selectModule();
+			$result = $this->module_model->queryAll();
 		}
 		$this->view->assign('list',$result) ;
 		$this->view->display('rolse_add.php');
@@ -38,7 +37,7 @@ class admin_rolse extends BaseController {
 			"info"		=>	$info,
 			"modules"	=>	$modules,
 		) ;
-		$result = $this->rolse_model->insertRolse($_rolse) ;
+		$result = $this->rolse_model->insert($_rolse) ;
 		if(empty($result)){
 			echo "fail" ;
 		}
@@ -52,10 +51,10 @@ class admin_rolse extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$module_list = $this->module_model->selectModule() ;
+		$module_list = $this->module_model->queryAll() ;
 		$this->view->assign('module_list',$module_list) ;
 		
-		$result = $this->rolse_model->selectRolse() ;
+		$result = $this->rolse_model->query() ;
 		$this->view->assign('list',$result) ;
 		$this->view->display('rolse_list.php');
 		
@@ -69,16 +68,16 @@ class admin_rolse extends BaseController {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$id = $_GET['id'] ;
-		$result = $this->rolse_model->selectRolse(array('id'=>$id)) ;
-		$modules = explode(',', $result[0]['modules']);
-		$result[0]['modules'] = $modules;
+		$result = $this->rolse_model->queryById($id) ;
+		$modules = explode(',', $result['modules']);
+		$result['modules'] = $modules;
 		
-		$this->view->assign('rolse',$result[0]) ;
+		$this->view->assign('rolse',$result) ;
 		
 //		$result = $this->module_model->selectModule(array('state'=>1)) ;
-		$result = $this->userrole_model->selectUserRankList($this->getUserID()) ;
+		$result = $this->userrole_model->query(array('userid'=>$this->getUserID())) ;
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$result = $this->module_model->selectModule();
+			$result = $this->module_model->queryAll();
 		}
 		$this->view->assign('list',$result);
 		$this->view->assign('id',$id) ;
@@ -91,28 +90,15 @@ class admin_rolse extends BaseController {
 	public function up_subAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
-		$id = $_GET['id'] ;
-		$modules = $_GET['modules'] ;
-
-		$name = trim($_GET['rolse']) ;
 		
-		if (empty($name)) {
-			echo "<script>alert('角色名不能为空！！！');</script>";
+		$modules = $_GET['modules'] ;
+		if(empty($modules)){
+			$modules = array();
 		}
-
-		$info = trim($_GET['info']) ;
-		if(empty($modules))
-			$modules = array(5);
-
 		$modules = implode(',', $modules) ;
-		$log .= "|$id,$name,$info,$modules" ;
-		$_rolse = array(
-			"id"		=>	$id,
-			"rolse"		=>	$name,
-			"info"		=>	$info,
-			"modules"	=>	$modules,
-		) ;
-		$result = $this->rolse_model->updateRolse($_rolse) ;
+		
+		$_GET['modules'] = $modules ;
+		$result = $this->rolse_model->update($_GET) ;
 		if(empty($result)){
 			echo "fail" ;
 		}

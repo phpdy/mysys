@@ -26,8 +26,9 @@ class main_index extends BaseController {
 		$username = Lib::safeS ( @$_POST ['username'] );
 		$password = Lib::safeS ( @$_POST ['password'] );
 		$log .= "|$username,$password" ;
-		$userinfo = $this->user_model->getUserInfo ( $username );
+		$userinfo = $this->user_model->query(array('name'=>$username) );
 		if ($userinfo) {
+			$userinfo = $userinfo[0] ;
 //			$password = md5($password) ;
 			if ($userinfo ['password'] !=  $password ) {
 				$this->view->assign('message','密码错误！') ;
@@ -57,11 +58,11 @@ class main_index extends BaseController {
 		@session_start ();
 		$userid = $_SESSION [FinalClass::$_session_user]['id'] ;
 		$log.="|$userid" ;
-		$rank = $this->userrole_model->selectUserRankList($userid);
+		$rank = $this->userrole_model->query(array('userid'=>$userid));
 //		$rank = $this->module->selectModule();
 		//admin用户拥有所有权限
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
-			$_rank = $this->module_model->selectModule();
+			$_rank = $this->module_model->queryAll();
 			$rank = array_merge($rank,$_rank) ;
 		}
 //		$rank = array_unique($rank) ;

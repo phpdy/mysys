@@ -2,7 +2,7 @@
 header("content-type:text/html; charset=utf-8") ;
 //设置默认控制器 
 if (empty($_GET['dir'])) {
-	$_GET['dir'] = "index";
+	$_GET['dir'] = "main";
 }
 //设置默认控制器 
 if (empty($_GET['control'])) {

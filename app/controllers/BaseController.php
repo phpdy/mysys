@@ -1,16 +1,18 @@
 <?php
 
 class BaseController extends Controller {
-	protected $model ;
+	protected $baseModel ;
 	protected $userrole_model ;
 	protected $start ;//起始时间
+	protected $control ;
 	
 	function __construct(){
 		$this->dir = $_GET['dir'] ;
+		$this->control = $_GET['control'] ;
 		parent::__construct() ;
+		$this->baseModel = new BaseModel() ;
 		$this->start = microtime(true)*1000 ;
 		$this->userrole_model = $this->initModel('userrole_model','admin');
-		$this->model = new BaseModel() ;
 	}
 	
 	public function safestr($str,$length = 0){
@@ -52,7 +54,7 @@ class BaseController extends Controller {
 
 	//添加
 	public function addAction(){
-		$this->view->display($this->dir . '_add.php');
+		$this->view->display($this->control . '_add.php');
 	}
 	
 	//提交
@@ -63,10 +65,10 @@ class BaseController extends Controller {
 		$data = $_POST ;
 		$result = 0 ;
 		if(!isset($_POST['id']) || empty($_POST['id'])){
-			$result = $this->model->insert($data) ;
+			$result = $this->baseModel->insert($data) ;
 		} else {
 			$data['id'] = $_POST['id'] ;
-			$result = $this->model->update($data) ;
+			$result = $this->baseModel->update($data) ;
 		}
 		if(empty($result)){
 			echo "操作失败:$result" ;
@@ -84,11 +86,11 @@ class BaseController extends Controller {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$data = $_POST ;
-		$result = $this->model->query($data) ;
+		$result = $this->baseModel->query($data) ;
 		
 		$this->view->assign('data',$data) ;
 		$this->view->assign('list',$result) ;
-		$this->view->display($this->dir .'_list.php');
+		$this->view->display($this->control .'_list.php');
 		
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
@@ -100,10 +102,10 @@ class BaseController extends Controller {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$id = $_GET['id'] ;
-		$object = $this->model->getById($id) ;
+		$object = $this->baseModel->getById($id) ;
 		$this->view->assign('object',$object) ;
 		
-		$this->view->display($this->dir .'_up.php');
+		$this->view->display($this->control .'_up.php');
 		
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
@@ -115,10 +117,10 @@ class BaseController extends Controller {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$id = $_GET['id'] ;
-		$object = $this->model->getById($id) ;
+		$object = $this->baseModel->getById($id) ;
 		$this->view->assign('object',$object) ;
 		
-		$this->view->display($this->dir .'_show.php');
+		$this->view->display($this->control .'_show.php');
 		
 		$log .= "|$id|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;

@@ -2,25 +2,21 @@
 
 class userrole_model extends BaseModel {
 	protected $dbIndex = 'admin';
+	protected $dbTable = "_userinfo" ;
+	protected $items = array('userid','rolses') ;
 	
-	public function insertUserinfo($data){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$userid = $data['userid'] ;
-		$rolses = $data['rolses'] ;
-		$log .= "|$userid,$rolses" ;
-		
-		$sql = "insert into ".$this->da_pre."_userinfo (userid,rolses) values(?,?)";
-		$params = array($userid,$rolses) ;
-		$result = $this->excuteSQL($sql,$params) ;
-		$log .= "|$sql" ;
-		
-		$log .= "|".$result ;
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBehavior($log) ;
-		return $result ;
+	protected function init(){
+		$this->dbTable = FinalClass::$_system."_userinfo" ;
 	}
+	
+	protected function getWhere(){
+		return " 1=1 " ;
+	}
+
+	protected function getOrder(){
+		return "order by id" ;
+	}
+	
 
 	public function updateUserinfo($data){
 		$start = microtime(true)*1000 ;
@@ -69,50 +65,6 @@ class userrole_model extends BaseModel {
 		return $result ;
 	}
 
-	/**
-	 * 用户角色查询
-	 * @param int $userid
-	 */
-	public function selectUserRolseList($userid){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$log .= "|$userid|" ;
-		try{
-			//查用户角色
-			$sql = "SELECT rolses FROM ".$this->da_pre."_userinfo WHERE userid='$userid'" ;
-			$result = $this->getAll($sql) ;
-			$log .= "$sql,".sizeof($result) ;
-	
-			if (empty($result) || sizeof($result)==0){
-				$log .= "|0|".(int)(microtime(true)*1000-$start) ;
-				Log::logBehavior($log) ;
-				return array() ;
-			}
-//			$rolses = array() ;
-//			foreach ($result as $item){
-//				$rolses[] = $item['rolses'] ;
-//			}
-//			$rolses = implode(',', array_unique($rolses)) ;
-//			
-//			//查角色对应的模块ID
-//			$sql = "SELECT modules FROM ".$this->da_pre."_rolse WHERE id IN ($rolses)" ;
-//			$result = $this->getAll($sql) ;
-//			$log .= ",$sql,".sizeof($result) ;
-//			
-//			if (empty($result) || sizeof($result)==0){
-//				$log .= "|0|".(int)(microtime(true)*1000-$start) ;
-//				Log::logBehavior($log) ;
-//				return array() ;
-//			}
-			$log .= "|".sizeof($result) ;
-		}catch (Exception $e){
-			print_r($e);
-		}
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBehavior($log) ;
-		return $result ;
-	}
 	/**
 	 * 用户权限查询
 	 * @param int $userid

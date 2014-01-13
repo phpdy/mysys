@@ -7,7 +7,10 @@ class Model extends Object {
 		if(!empty($this->dbconfig)){
 			$this->getPdo();
 		}
+		$this->init() ;
 	}
+	
+	protected function init(){}
 	
 	protected function getPdo(){
 		$config = $this->dbconfig ;

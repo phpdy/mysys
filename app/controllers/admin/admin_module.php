@@ -7,26 +7,15 @@ class admin_module extends BaseController {
 	}
 	//添加
 	public function addAction(){
-		$result = $this->module_model->selectModule(array('type'=>1)) ;
+		$result = $this->module_model->queryAll(array('type'=>1)) ;
 		$this->view->assign('list',$result) ;
-		$this->view->display('module_add.php');
+		$this->view->display($this->control . '_add.php');
 	}
 	public function add_subAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$name = $_GET['name'] ;
-		$url = $_GET['url'] ;
-		$type = $_GET['type'] ;
-		$parentid = $_GET['parentid'] ;
-		$log .= "|$name,$url,$type,$parentid" ;
-		$module = array(
-			"name"		=>	$name,
-			"url"		=>	$url,
-			"type"		=>	$type,
-			"parentid"	=>	$parentid,
-		) ;
-		$result = $this->module_model->insertModule($module) ;
+		$result = $this->module_model->insert($_GET) ;
 		if(empty($result)){
 			echo "fail" ;
 		}
@@ -38,7 +27,7 @@ class admin_module extends BaseController {
 	public function listAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
-		$result = $this->module_model->selectModule() ;
+		$result = $this->module_model->queryAll() ;
 		
 		$this->view->assign('list',$result) ;
 		$this->view->display('module_list.php');
@@ -53,10 +42,10 @@ class admin_module extends BaseController {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$id = $_GET['id'] ;
-		$result = $this->module_model->selectModule(array('id'=>$id)) ;
-		$this->view->assign('module',$result[0]) ;
+		$result = $this->module_model->queryById($id) ;
+		$this->view->assign('module',$result) ;
 		
-		$result = $this->module_model->selectModule(array('type'=>1)) ;
+		$result = $this->module_model->queryAll(array('type'=>1)) ;
 		$this->view->assign('list',$result) ;
 		
 		$this->view->display('module_up.php');
@@ -68,20 +57,7 @@ class admin_module extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$id = $_GET['id'] ;
-		$name = $_GET['name'] ;
-		$url = $_GET['url'] ;
-		$type = $_GET['type'] ;
-		$parentid = $_GET['parentid'] ;
-		$log .= "|$id,$name,$url,$type,$parentid" ;
-		$module = array(
-			"id"		=>	$id,
-			"name"		=>	$name,
-			"url"		=>	$url,
-			"type"		=>	$type,
-			"parentid"	=>	$parentid,
-		) ;
-		$result = $this->module_model->updateModule($module) ;
+		$result = $this->module_model->update($_GET) ;
 		if(empty($result)){
 			echo "fail" ;
 		}
@@ -95,13 +71,14 @@ class admin_module extends BaseController {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		$id = $_GET['id'] ;
 		$log .= "|$id" ;
-		$result = $this->module_model->selectModule(array('id'=>$id)) ;
-		$state = $result[0]['state'] ;
+		$result = $this->module_model->queryById($id) ;
+		$state = $result['state'] ;
 		$module = array(
 			"id"		=>	$id,
 			"state"		=>	$state==1?0:1,
 		) ;
-		$result = $this->module_model->updateModule($module) ;
+		
+		$result = $this->module_model->update($module) ;
 		
 		$this->listAction();
 		$log .= "|".(int)(microtime(true)*1000-$start) ;

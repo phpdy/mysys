@@ -16,7 +16,7 @@
                     <tbody><tr>
                         <td class="title"><b>用户:</b></td>
                         <td>
-                        	<?php echo $usernames['name'] . '-' . $usernames['username'];?>
+                        	<?php echo $user['name'] . '-' . $user['username'];?>
                         </td>
                     </tr>
                     <tr>

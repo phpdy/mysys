@@ -3,9 +3,7 @@
 class admin_user extends BaseController {
 
 	public function init(){
-		$this->user = $this->initModel('user_model','admin');
-		$this->rolse = $this->initModel('rolse_model','admin');
-		$this->module = $this->initModel('module_model','admin');
+		$this->user_model = $this->initModel('user_model','admin');
 	}
 	
 	//用户添加页面
@@ -19,25 +17,21 @@ class admin_user extends BaseController {
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$name = $_POST['name'];
-		$username = $_POST['username'] ;//iconv("UTF-8","GB2312//IGNORE",$_POST['username']);
-		$password = $_POST['password'];
 		
-		if (empty($username) || empty($name) || empty($password)) {
+		if ( empty($name) ) {
 			echo '参数不能为空!!!';
 			exit;
 		}
 		
 		//检测用户名是否存在
-		$userinfo = $this->user->getUserInfo($name);
+		$userinfo = $this->user_model->query(array('name'=>$name)) ;
 		if (!empty($userinfo)) {
 			echo '用户名已经存在，请重新填写！！！';
 			exit;
 		}
 		
-//		$password = md5($password);
-		$log .= "|$name,$username,$password";
-				
-		$res = $this->user->addUser($name,$username,$password);
+		$_POST['registdate'] = date("Y-m-d h:i:s") ;
+		$res = $this->user_model->insert($_POST);
 		if($res!=1){
 			echo "fail " ;
 		}
@@ -53,7 +47,7 @@ class admin_user extends BaseController {
 		$type = !empty($_GET['type'])?$_GET['type']:0 ;
 		$log = "|$type" ;
 		
-		$res = $this->user->getUserList();
+		$res = $this->user_model->query($_GET);
 		$log = "|".count($res) ;
 		
 		$this->view->assign('type',$type);
@@ -71,7 +65,7 @@ class admin_user extends BaseController {
 		$userid = $_GET['userid'] ;
 		$log .= "|$userid" ;
 		
-		$res = $this->user->getusername($userid);
+		$res = $this->user_model->queryById($userid);
 		$log .= "|".count($res) ;
 		
 		echo json_encode($res) ;
@@ -87,7 +81,7 @@ class admin_user extends BaseController {
 		$log .= "|$userid,$password" ;
 		
 //		$password = md5($password);
-		$res = $this->user->updatePWD($userid,$password) ;
+		$res = $this->user_model->update(array('id'=>$userid,'password'=>$password)) ;
 		$log .= "|".$res ;
 		
 		echo "密码修改成功!" ;
@@ -115,7 +109,7 @@ class admin_user extends BaseController {
 		$userid = $_GET['userid'] ;
 		$log .= "|$userid" ;
 		
-		$res = $this->user->deleteUserByUserId($userid);
+		$res = $this->user_model->delete($userid);
 		$log .= "|".$res ;
 		
 		echo $res?"删除成功":"失败" ;
