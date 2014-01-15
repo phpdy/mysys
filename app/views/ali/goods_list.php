@@ -9,6 +9,31 @@
 <div class="content">
     <div id="main" class="main">
         <div id="gamefeatures"><h2>商品列表</h2></div>
+        
+        <div id="gamemain">
+        <form method="post" action="">
+            <input type="hidden" value="ali" name="dir">
+            <input type="hidden" value="goods" name="control">
+            <input type="hidden" value="add" name="action">
+       		批发商：<select name="whoid">
+       		<option value="0" >全部
+	       		<?php 
+				foreach($wholist as $item){
+					$id = $item['id'] ;
+					$name = $item['name'] ;
+					$p="" ;
+					if($id==@$data['whoid']){
+						$p="selected" ;
+					}
+					echo "<option value='$id' $p>$name" ;
+				}
+	       		?>
+			</select>
+			<input type="hidden" name="page" value="<?php echo @$data['page'] ;?>"/>
+			<input type="submit" value="查询">
+        </form>
+        </div>
+        
         <table class="GF-listTab">
             <tbody>
             <tr id="title">
@@ -33,6 +58,7 @@
 		}
 		?>
 		</table>
+		<?php include 'paging.php';?>
 	</div>
 </div>
 </body>

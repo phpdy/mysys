@@ -4,6 +4,7 @@ class ali_buy extends BaseController {
 
 	public function init(){
 		$this->ali_buy = $this->initModel('buy_model','ali');
+		$this->ali_who = $this->initModel('who_model','ali');
 		$this->ali_goods = $this->initModel('goods_model','ali');
 	}
 	//添加
@@ -11,7 +12,7 @@ class ali_buy extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$goodslist = $this->ali_goods->selectGoods() ;
+		$goodslist = $this->ali_goods->queryAll() ;
 		$this->view->assign('goodslist',$goodslist) ;
 		if(!empty($_POST['name']) && !empty($_POST['goodsid']) && !empty($_POST['price']) && !empty($_POST['num'])){
 			$buy = array(
@@ -36,18 +37,31 @@ class ali_buy extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$goodslist = $this->ali_goods->selectGoods() ;
+		$goodslist = $this->ali_goods->queryAll() ;
 		$this->view->assign('goodslist',$goodslist) ;
+		$wholist = $this->ali_who->queryAll() ;
+		$this->view->assign('wholist',$wholist) ;
 		
-		$buy = array() ;
+		$data = array() ;
+		if(!empty($_POST['whoid'])){
+			$data['whoid'] = $_POST['whoid'] ;
+		}
 		if(!empty($_POST['goodsid'])){
-			$buy['goodsid'] = $_POST['goodsid'] ;
+			$data['goodsid'] = $_POST['goodsid'] ;
 		}
 		if(!empty($_POST['date'])){
-			$buy['date'] = $_POST['date'] ;
+			$data['date'] = $_POST['date'] ;
 		}
-		$result = $this->ali_buy->selectBuy($buy) ;
+		if(!empty($_POST['page'])){
+			$data['page'] = $_POST['page'] ;
+		} else {
+			$data['page'] = 0 ;
+		}
+		$pagenum = $this->ali_buy->queryCount($data) ;
+		$result = $this->ali_buy->selectBuy($data) ;
 		
+		$this->view->assign('pagenum',$pagenum) ;
+		$this->view->assign('data',$data) ;
 		$this->view->assign('list',$result) ;
 		$this->view->display('buy_list.php');
 		
@@ -60,7 +74,7 @@ class ali_buy extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$goodslist = $this->ali_goods->selectGoods() ;
+		$goodslist = $this->ali_goods->queryAll() ;
 		$this->view->assign('goodslist',$goodslist) ;
 		if(!empty($_POST['name']) && !empty($_POST['goodsid']) && !empty($_POST['price']) && !empty($_POST['num'])){
 			$buy = array(

@@ -115,7 +115,8 @@ class goods_model extends BaseModel {
 			$params[] = $data['state'] ;
 			$log .= ",$data[state]" ;
 		}
-		$sql .= "order by goods.whoid, goods.id" ;
+		$sql .= "order by goods.whoid, goods.id ".$this->getLimit($data) ;
+		
 		$result = $this->getAll($sql,$params) ;
 		$log .= "|$sql" ;
 		

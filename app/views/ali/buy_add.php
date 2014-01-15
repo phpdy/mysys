@@ -22,7 +22,7 @@
                     <td><select name="whoid">
 						<?php 
 						foreach ($goodslist as $item){
-							echo "<option value='$item[id]'>".$item['whoname']."-".$item['name'] ;
+							echo "<option value='$item[id]'>".$item['name'] ;
 						}
 						?>
                     </select></td></tr>

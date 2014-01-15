@@ -4,6 +4,7 @@ class ali_sale extends BaseController {
 
 	public function init(){
 		$this->ali_sale = $this->initModel('sale_model','ali');
+		$this->ali_who = $this->initModel('who_model','ali');
 		$this->ali_goods = $this->initModel('goods_model','ali');
 	}
 	//添加
@@ -38,16 +39,29 @@ class ali_sale extends BaseController {
 		
 		$goodslist = $this->ali_goods->selectGoods() ;
 		$this->view->assign('goodslist',$goodslist) ;
+		$wholist = $this->ali_who->queryAll() ;
+		$this->view->assign('wholist',$wholist) ;
 		
-		$sale = array() ;
+		$data = array() ;
+		if(!empty($_POST['whoid'])){
+			$data['whoid'] = $_POST['whoid'] ;
+		}
 		if(!empty($_POST['goodsid'])){
-			$sale['goodsid'] = $_POST['goodsid'] ;
+			$data['goodsid'] = $_POST['goodsid'] ;
 		}
 		if(!empty($_POST['date'])){
-			$sale['date'] = $_POST['date'] ;
+			$data['date'] = $_POST['date'] ;
 		}
-		$result = $this->ali_sale->selectSale($sale) ;
+		if(!empty($_POST['page'])){
+			$data['page'] = $_POST['page'] ;
+		} else {
+			$data['page'] = 0 ;
+		}
+		$pagenum = $this->ali_sale->queryCount($data) ;
+		$result = $this->ali_sale->selectSale($data) ;
 		
+		$this->view->assign('pagenum',$pagenum) ;
+		$this->view->assign('data',$data) ;
 		$this->view->assign('list',$result) ;
 		$this->view->display('sale_list.php');
 		

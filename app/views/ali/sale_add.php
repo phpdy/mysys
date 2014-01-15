@@ -19,7 +19,7 @@
                 <table>
                     <tbody>
                     <tr><td class="title"><b>商品:</b></td>
-                    <td><select name="whoid">
+                    <td><select name="goodsid">
 						<?php 
 						foreach ($goodslist as $item){
 							echo "<option value='$item[id]'>".$item['whoname']."-".$item['name'] ;

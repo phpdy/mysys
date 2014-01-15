@@ -171,10 +171,7 @@ class BaseModel extends Model {
 		if(!empty($k)){
 			$p1 = "and ".implode("and", $k) ;
 		}
-		$size = FinalClass::$_list_pagesize ;
-		$start = (empty($data['page'])?0:$data['page'])*$size ;
-		
-		$sql = "select * from ".$this->dbTable." where ".$this->getWhere()." $p1 ".$this->getOrder()." limit $start,$size";
+		$sql = "select * from ".$this->dbTable." where ".$this->getWhere()." $p1 ".$this->getOrder().$this->getLimit($data);
 		$result = $this->querySQL($sql,$params) ;
 		
 		$log .= '|' . $sql." > ".implode(",", $params);
@@ -246,7 +243,7 @@ class BaseModel extends Model {
 			$p1 = "and ".implode("and", $k) ;
 		}
 		
-		$sql = "select count(*) count from ".$this->dbtable." where ".$this->getWhere()." $p1 ";
+		$sql = "select count(*) count from ".$this->dbTable." where ".$this->getWhere()." $p1 ";
 		$result = $this->getOne($sql,$params) ;
 		$pages = (int)(($result['count'] - 1)/FinalClass::$_list_pagesize) + 1 ;
 		
@@ -260,8 +257,15 @@ class BaseModel extends Model {
 	protected function getWhere(){
 		return " 1=1 " ;
 	}
+	protected function getLimit($data){
+		$size = FinalClass::$_list_pagesize ;
+		$start = (empty($data['page'])?0:$data['page'])*$size ;
+		
+		$sql = "limit $start,$size ";
+		return $sql ;
+	}
 	protected function getOrder(){
-		return "order by id" ;
+		return "order by id " ;
 	}
 	
 }

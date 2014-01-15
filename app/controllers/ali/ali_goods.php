@@ -42,8 +42,16 @@ class ali_goods extends BaseController {
 		if(!empty($_POST['state'])){
 			$goods['state'] = $_POST['state'] ;
 		}
+		if(!empty($_POST['page'])){
+			$goods['page'] = $_POST['page'] ;
+		} else {
+			$goods['page'] = 0 ;
+		}
+		$pagenum = $this->ali_goods->queryCount($goods) ;
 		$result = $this->ali_goods->selectGoods($goods) ;
 		
+		$this->view->assign('pagenum',$pagenum) ;
+		$this->view->assign('data',$goods) ;
 		$this->view->assign('list',$result) ;
 		$this->view->display('goods_list.php');
 		

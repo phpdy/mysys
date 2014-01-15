@@ -15,17 +15,40 @@
             <input type="hidden" value="ali" name="dir">
             <input type="hidden" value="buy" name="control">
             <input type="hidden" value="list" name="action">
-       	商品：<select id="goodsid" name="goodsid">
+           	 批发商：<select name="whoid">
+       		<option value="0" >全部
+	       		<?php 
+				foreach($wholist as $item){
+					$id = $item['id'] ;
+					$name = $item['name'] ;
+					$p="" ;
+					if($id==@$data['whoid']){
+						$p="selected" ;
+					}
+					echo "<option value='$id' $p>$name" ;
+				}
+	       		?>
+			</select>
+			
+       		商品：<select id="goodsid" name="goodsid">
      			<option value="">全部</option>
      			<?php 
      			foreach ($goodslist as $item){
-     				
-     				echo "<option value='$item[id]' >$item[whoname]-$item[name]</option>" ;
+					$id = $item['id'] ;
+					$name = $item['name'] ;
+					$p="" ;
+					if($id==@$data['goodsid']){
+						$p="selected" ;
+					}
+					echo "<option value='$id' $p>$name" ;
+     				//echo "<option value='$item[id]' >$item[whoname]-$item[name]</option>" ;
      			}
      			?>
 			</select>
 		时间:<input type="text" name="date" value="" size="10" maxlength="10" onclick="new Calendar().show(this);" readonly="readonly"/>
-       	<input type="submit" value="查询">
+       	
+			<input type="hidden" name="page" value="<?php echo @$data['page'] ;?>"/>
+			<input type="submit" value="查询">
         </form>
         </div>
         <table class="GF-listTab">
@@ -43,6 +66,7 @@
             </tr>
 		<?php
 		$i = 0;
+		$priceCount = $numCount = $fareCount = $sumCount =0 ;
 		foreach ($list as $item){
 			$class = $i%2==0 ? 'trstyle1' : 'trstyle2';
 			$id = $item['id'] ;
@@ -65,9 +89,23 @@
 			"<td>$fare</td>".
 			"<td>$date</td>".
 			"<td>$sum</td></tr>" ;
+			$priceCount += $price ;
+			$numCount += $num ;
+			$fareCount += $fare ;
+			$sumCount += $sum ;
 		}
+		echo "<tr class='trstyle2'><td>统计</td>".
+			"<td>$i</td>".
+			"<td>-</td>".
+			"<td>-</td>".
+			"<td>$priceCount</td>".
+			"<td>$numCount</td>".
+			"<td>$fareCount</td>".
+			"<td>-</td>".
+			"<td>$sumCount</td></tr>" ;
 		?>
 		</table>
+		<?php include 'paging.php';?>
 	</div>
 </div>
 </body>
