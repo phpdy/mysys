@@ -3,7 +3,7 @@
 class userrole_model extends BaseModel {
 	protected $dbIndex = 'admin';
 	protected $dbTable = "_userinfo" ;
-	protected $items = array('userid','rolses') ;
+	protected $items = array('userid','rolses','state') ;
 	
 	protected function init(){
 		$this->dbTable = FinalClass::$_system."_userinfo" ;
@@ -17,54 +17,6 @@ class userrole_model extends BaseModel {
 		return "order by id " ;
 	}
 	
-
-	public function updateUserinfo($data){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$id = $data['id'] ;
-		$rolses = $data['rolses'] ;
-		$state = $data['state'] ;
-		$log .= "|$id,$rolses,$state" ;
-		
-		$sql = "update ".$this->da_pre."_userinfo set rolses=?,state=? where id=?";
-		$params = array($rolses,$state,$id) ;
-		$result = $this->excuteSQL($sql,$params) ;
-		$log .= "|$sql" ;
-		
-		$log .= "|".$result ;
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBehavior($log) ;
-		return $result ;
-	}
-
-	public function selectUserinfo($data=array()){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$sql = "select * from ".$this->da_pre."_userinfo where 1=1" ;
-		$params = array() ;
-		
-		if (! empty ( $data['id'] )) {
-			$sql .= " and id=?";
-			$params[] = $data['id'] ;
-			$log .= "$data[id],";
-		}
-	
-		if (! empty ( $data['userid'] )) {
-			$sql .= " and userid=?";
-			$params[] = $data['userid'] ;
-			$log .= "$data[userid],";
-		}
-		$result = $this->getAll($sql, $params) ;
-		$log .= "|$sql" ;
-		
-		$log .= "|".sizeof($result) ;
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBehavior($log) ;
-		return $result ;
-	}
-
 	/**
 	 * 用户权限查询
 	 * @param int $userid
@@ -75,7 +27,7 @@ class userrole_model extends BaseModel {
 		
 		$log .= "|$userid|" ;
 		try{
-			$result = $this->selectUserRolseList($userid) ;
+			$result = $this->queryAll(array('userid'=>$userid)) ;
 			if (empty($result) || sizeof($result)==0){
 				$log .= "|0|".(int)(microtime(true)*1000-$start) ;
 				Log::logBehavior($log) ;
@@ -119,7 +71,4 @@ class userrole_model extends BaseModel {
 		return $result ;
 	}
 	
-	public function delUserinfo($data) {
-		return $this->delete('xy_user','game_userinfo',$data);
-	}
 }

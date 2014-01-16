@@ -58,7 +58,7 @@ class main_index extends BaseController {
 		@session_start ();
 		$userid = $_SESSION [FinalClass::$_session_user]['id'] ;
 		$log.="|$userid" ;
-		$rank = $this->userrole_model->query(array('userid'=>$userid));
+		$rank = $this->userrole_model->selectUserRankList($userid);
 //		$rank = $this->module->selectModule();
 		//admin用户拥有所有权限
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){

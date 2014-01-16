@@ -9,7 +9,7 @@ class admin_userrole extends BaseController {
 	//首页
 	public function addAction(){
 		$user_list = $this->user_model->queryAll() ;
-		$userinfo_list = $this->userrole_model->selectUserinfo() ;
+		$userinfo_list = $this->userrole_model->queryAll() ;
 		//剔除已添加的用户信息
 		foreach ($user_list as $key=>$user){
 			$userid = $user['id'] ;
@@ -27,8 +27,8 @@ class admin_userrole extends BaseController {
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
 			$rolse_list = $this->rolse_model->queryAll() ;
 		} else {
-			$rolseid = $this->userrole_model->selectUserRolseList($this->getUserID()) ;
-			$rolse_list = $this->rolse_model->selectRolsesByIds($rolseid[0]['rolses']) ;
+			$rolselist = $this->userrole_model->queryAll(array('userid'=>$this->getUserID())) ;
+			$rolse_list = $this->rolse_model->selectRolsesByIds($rolselist[0]['rolses']) ;
 		}
 //		print_r($rolse_list);
 		$this->view->assign('rolse_list',$rolse_list) ;
@@ -53,7 +53,7 @@ class admin_userrole extends BaseController {
 	public function listAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
-		$result = $this->userrole_model->selectUserinfo() ;
+		$result = $this->userrole_model->queryAll() ;
 		$this->view->assign('list',$result) ;
 		$user_list = $this->user_model->queryAll() ;
 		$this->view->assign('user_list',$user_list) ;
@@ -75,7 +75,7 @@ class admin_userrole extends BaseController {
 		if ($_SESSION [FinalClass::$_session_user]['name']=='admin'){
 			$show_rolelist = $this->rolse_model->queryAll() ;
 		} else {
-			$rolselist = $this->userrole_model->query(array('userid'=>$this->getUserID())) ;
+			$rolselist = $this->userrole_model->queryAll(array('userid'=>$this->getUserID())) ;
 			$show_rolelist = $this->rolse_model->selectRolsesByIds($rolselist[0]['rolses']) ;
 		}
 		
