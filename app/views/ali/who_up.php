@@ -10,10 +10,7 @@
 <div class="content">
     <div id="main" class="main">
         <div id="gamefeatures"><h2>批发商修改</h2></div>
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="who" name="control">
-            <input type="hidden" value="up" name="action">
+        <form method="post" action="?dir=ali&control=who&action=submit">
             <input type="hidden" value="<?php echo $who['id']; ?>" name="id">
             <div id="gamemain">
                 <table>

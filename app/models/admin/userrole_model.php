@@ -10,11 +10,11 @@ class userrole_model extends BaseModel {
 	}
 	
 	protected function getWhere(){
-		return " 1=1 " ;
+		return "1=1 " ;
 	}
 
 	protected function getOrder(){
-		return "order by id" ;
+		return "order by id " ;
 	}
 	
 

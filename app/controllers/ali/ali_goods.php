@@ -11,28 +11,57 @@ class ali_goods extends BaseController {
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$wholist = $this->ali_who->selectAllWho() ;
+		$wholist = $this->ali_who->queryAll() ;
 		$this->view->assign('wholist',$wholist) ;
-		if(!empty($_POST['name']) && !empty($_POST['whoid'])){
-			$goods = array(
-				'whoid' => $_POST['whoid'] ,
-				'name' 	=> $_POST['name'] ,
-				'info' 	=> $_POST['info'] ,
-			) ;
-			$this->ali_goods->insertGoods($goods) ;
-		}
-//		print_r($_POST) ;
 		$this->view->display('goods_add.php');
 		
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
 	}
+	//修改
+	public function upAction(){
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+		
+		$wholist = $this->ali_who->queryAll() ;
+		$this->view->assign('wholist',$wholist) ;
+		
+		$id = $_GET['id'] ;
+		$result = $this->ali_goods->queryById($id) ;
+		
+		$this->view->assign('goods',$result) ;
+		$this->view->display('goods_up.php');
+		$log .= "|".(int)(microtime(true)*1000-$start) ;
+		Log::logBusiness($log) ;
+	}
+	public function submitAction(){
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+		
+		$data = $_POST ;
+		$result = 0 ;
+		if(!isset($_POST['id']) || empty($_POST['id'])){
+			$result = $this->ali_goods->insert($data) ;
+		} else {
+			$data['id'] = $_POST['id'] ;
+			$result = $this->ali_goods->update($data) ;
+		}
+		if(empty($result)){
+			echo "操作失败:$result" ;
+			die() ;
+		}
+		
+		$this->listAction();
+		$log .= "|".(int)(microtime(true)*1000-$start) ;
+		Log::logBusiness($log) ;
+	}
+	
 	//列表
 	public function listAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
-		$wholist = $this->ali_who->selectAllWho() ;
+		$wholist = $this->ali_who->queryAll() ;
 		$this->view->assign('wholist',$wholist) ;
 		
 		$goods = array() ;
@@ -59,33 +88,6 @@ class ali_goods extends BaseController {
 		Log::logBusiness($log) ;
 	}
 
-	//修改
-	public function upAction(){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$wholist = $this->ali_who->selectAllWho() ;
-		$this->view->assign('wholist',$wholist) ;
-		
-		if(!empty($_POST['name']) && !empty($_POST['whoid'])){
-			$goods = array(
-				'id' 	=> $_POST['id'] ,
-				'whoid' => $_POST['whoid'] ,
-				'name' 	=> $_POST['name'] ,
-				'info' 	=> $_POST['info'] ,
-			) ;
-			$this->ali_goods->updateGoods($goods) ;
-//			$_POST = null ;
-			$this->listAction();
-		} else if(!empty($_GET['id'])){
-			$id = $_GET['id'] ;
-			$result = $this->ali_goods->selectGoodsById($id) ;
-			$this->view->assign('goods',$result) ;
-			$this->view->display('goods_up.php');
-		}
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBusiness($log) ;
-	}
 }
 
 ?>

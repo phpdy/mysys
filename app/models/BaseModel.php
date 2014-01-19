@@ -255,7 +255,7 @@ class BaseModel extends Model {
 	}
 	
 	protected function getWhere(){
-		return " 1=1 " ;
+		return "1=1 " ;
 	}
 	protected function getLimit($data){
 		$size = FinalClass::$_list_pagesize ;

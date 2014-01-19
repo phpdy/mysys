@@ -11,10 +11,7 @@
     <div id="main" class="main">
         <div id="gamefeatures"><h2>进货列表</h2></div>
         <div id="gamemain">
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="buy" name="control">
-            <input type="hidden" value="list" name="action">
+        <form method="post" action="?dir=ali&control=buy&action=list">
            	 批发商：<select name="whoid">
        		<option value="0" >全部
 	       		<?php 
@@ -30,22 +27,7 @@
 	       		?>
 			</select>
 			
-       		商品：<select id="goodsid" name="goodsid">
-     			<option value="">全部</option>
-     			<?php 
-     			foreach ($goodslist as $item){
-					$id = $item['id'] ;
-					$name = $item['name'] ;
-					$p="" ;
-					if($id==@$data['goodsid']){
-						$p="selected" ;
-					}
-					echo "<option value='$id' $p>$name" ;
-     				//echo "<option value='$item[id]' >$item[whoname]-$item[name]</option>" ;
-     			}
-     			?>
-			</select>
-		时间:<input type="text" name="date" value="" size="10" maxlength="10" onclick="new Calendar().show(this);" readonly="readonly"/>
+			时间:<input type="text" name="date" size="10" maxlength="10" onclick="new Calendar().show(this);" value="<?php echo @$data['date'] ;?>" readonly="readonly"/>
        	
 			<input type="hidden" name="page" value="<?php echo @$data['page'] ;?>"/>
 			<input type="submit" value="查询">

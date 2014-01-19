@@ -11,10 +11,7 @@
     <div id="main" class="main">
         <div id="gamefeatures"><h2>销售列表</h2></div>
         <div id="gamemain">
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="sale" name="control">
-            <input type="hidden" value="list" name="action">
+        <form method="post" action="?dir=ali&control=sale&action=list">
            	 批发商：<select name="whoid">
        		<option value="0" >全部
 	       		<?php 
@@ -33,12 +30,15 @@
      			<option value="">全部</option>
      			<?php 
      			foreach ($goodslist as $item){
-     				
-     				echo "<option value='$item[id]' >$item[whoname]-$item[name]</option>" ;
+					$p="" ;
+					if($item['id']==@$data['goodsid']){
+						$p="selected" ;
+					}
+     				echo "<option value='$item[id]' $p>$item[name]</option>" ;
      			}
      			?>
 			</select>
-			时间:<input type="text" name="date" value="" size="10" maxlength="10" onclick="new Calendar().show(this);" readonly="readonly"/>
+			时间:<input type="text" name="date" value="<?php echo @$data['date'] ;?>" size="10" maxlength="10" onclick="new Calendar().show(this);" readonly="readonly"/>
 			<input type="hidden" name="page" value="<?php echo @$data['page'] ;?>"/>
        		<input type="submit" value="查询">
         </form>
@@ -74,7 +74,7 @@
 			echo "<tr class='$class'><td>{$i}</td>".
 			"<td>$whoname</td>".
 			"<td>$goodsname</td>".
-			"<td><a href='?dir=ali&control=buy&action=up&id=$id'>$buyer</a></td>".
+			"<td><a href='?dir=ali&control=sale&action=up&id=$id'>$buyer</a></td>".
 			"<td>$price</td>".
 			"<td>$num</td>".
 			"<td>$fare</td>".

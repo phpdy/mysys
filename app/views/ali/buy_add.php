@@ -11,15 +11,12 @@
 <div class="content">
     <div id="main" class="main">
         <div id="gamefeatures"><h2>进货添加</h2></div>
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="buy" name="control">
-            <input type="hidden" value="add" name="action">
+        <form method="post" action="?dir=ali&control=buy&action=submit">
             <div id="gamemain">
                 <table>
                     <tbody>
                     <tr><td class="title"><b>商品:</b></td>
-                    <td><select name="whoid">
+                    <td><select name="goodsid">
 						<?php 
 						foreach ($goodslist as $item){
 							echo "<option value='$item[id]'>".$item['name'] ;

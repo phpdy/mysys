@@ -9,11 +9,11 @@ class rolse_model extends BaseModel {
 	}
 	
 	protected function getWhere(){
-		return " 1=1 " ;
+		return "1=1 " ;
 	}
 
 	protected function getOrder(){
-		return "ORDER BY id DESC" ;
+		return "ORDER BY id DESC " ;
 	}
 
 	public function selectRolsesByIds($ids) {

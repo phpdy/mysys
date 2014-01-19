@@ -11,10 +11,7 @@
         <div id="gamefeatures"><h2>商品列表</h2></div>
         
         <div id="gamemain">
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="goods" name="control">
-            <input type="hidden" value="add" name="action">
+        <form method="post" action="?dir=ali&control=goods&action=list">
        		批发商：<select name="whoid">
        		<option value="0" >全部
 	       		<?php 

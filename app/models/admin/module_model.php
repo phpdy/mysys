@@ -10,11 +10,11 @@ class module_model extends BaseModel {
 	}
 	
 	protected function getWhere(){
-		return " urltype in (0,2) " ;
+		return "urltype in (0,2) " ;
 	}
 
 	protected function getOrder(){
-		return " ORDER BY parentid,TYPE,id " ;
+		return "ORDER BY parentid,TYPE,id " ;
 	}
 	
 	

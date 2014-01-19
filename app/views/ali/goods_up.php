@@ -10,10 +10,7 @@
 <div class="content">
     <div id="main" class="main">
         <div id="gamefeatures"><h2>商品信息修改</h2></div>
-        <form method="post" action="">
-            <input type="hidden" value="ali" name="dir">
-            <input type="hidden" value="goods" name="control">
-            <input type="hidden" value="up" name="action">
+        <form method="post" action="?dir=ali&control=goods&action=submit">
             <input type="hidden" value="<?php echo $goods['id']; ?>" name="id">
             <div id="gamemain">
                 <table>

@@ -14,40 +14,63 @@ class ali_buy extends BaseController {
 		
 		$goodslist = $this->ali_goods->queryAll() ;
 		$this->view->assign('goodslist',$goodslist) ;
-		if(!empty($_POST['name']) && !empty($_POST['goodsid']) && !empty($_POST['price']) && !empty($_POST['num'])){
-			$buy = array(
-				'goodsid' 	=> $_POST['goodsid'] ,
-				'name' 		=> $_POST['name'] ,
-				'info' 		=> $_POST['info'] ,
-				'price' 	=> $_POST['price'] ,
-				'num' 		=> $_POST['num'] ,
-				'fare' 		=> $_POST['fare'] ,
-				'date' 		=> $_POST['date'] ,
-			) ;
-			$this->ali_buy->insertBuy($buy) ;
-		}
-//		print_r($_POST) ;
+		
 		$this->view->display('buy_add.php');
 		
 		$log .= "|".(int)(microtime(true)*1000-$start) ;
 		Log::logBusiness($log) ;
 	}
-	//列表
-	public function listAction(){
+	//修改
+	public function upAction(){
 		$start = microtime(true)*1000 ;
 		$log = __CLASS__."|".__FUNCTION__ ;
 		
 		$goodslist = $this->ali_goods->queryAll() ;
 		$this->view->assign('goodslist',$goodslist) ;
+		
+		$id = $_GET['id'] ;
+		$result = $this->ali_buy->queryById($id) ;
+		
+		$this->view->assign('buy',$result) ;
+		$this->view->display('buy_up.php');
+		$log .= "|".(int)(microtime(true)*1000-$start) ;
+		Log::logBusiness($log) ;
+	}
+	public function submitAction(){
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+		
+		$data = $_POST ;
+		$result = 0 ;
+		if(!isset($_POST['id']) || empty($_POST['id'])){
+			$result = $this->ali_buy->insert($data) ;
+		} else {
+			$data['id'] = $_POST['id'] ;
+			$result = $this->ali_buy->update($data) ;
+		}
+		if(empty($result)){
+			echo "操作失败:$result" ;
+			die() ;
+		}
+		
+		$this->listAction();
+		$log .= "|".(int)(microtime(true)*1000-$start) ;
+		Log::logBusiness($log) ;
+	}
+	
+	//列表
+	public function listAction(){
+		$start = microtime(true)*1000 ;
+		$log = __CLASS__."|".__FUNCTION__ ;
+		
+//		$goodslist = $this->ali_goods->queryAll() ;
+//		$this->view->assign('goodslist',$goodslist) ;
 		$wholist = $this->ali_who->queryAll() ;
 		$this->view->assign('wholist',$wholist) ;
 		
 		$data = array() ;
 		if(!empty($_POST['whoid'])){
 			$data['whoid'] = $_POST['whoid'] ;
-		}
-		if(!empty($_POST['goodsid'])){
-			$data['goodsid'] = $_POST['goodsid'] ;
 		}
 		if(!empty($_POST['date'])){
 			$data['date'] = $_POST['date'] ;
@@ -69,36 +92,6 @@ class ali_buy extends BaseController {
 		Log::logBusiness($log) ;
 	}
 
-	//修改
-	public function upAction(){
-		$start = microtime(true)*1000 ;
-		$log = __CLASS__."|".__FUNCTION__ ;
-		
-		$goodslist = $this->ali_goods->queryAll() ;
-		$this->view->assign('goodslist',$goodslist) ;
-		if(!empty($_POST['name']) && !empty($_POST['goodsid']) && !empty($_POST['price']) && !empty($_POST['num'])){
-			$buy = array(
-				'id' 		=> $_POST['id'] ,
-				'goodsid' 	=> $_POST['goodsid'] ,
-				'name' 		=> $_POST['name'] ,
-				'info' 		=> $_POST['info'] ,
-				'price' 	=> $_POST['price'] ,
-				'num' 		=> $_POST['num'] ,
-				'fare' 		=> $_POST['fare'] ,
-				'date' 		=> $_POST['date'] ,
-			) ;
-			$this->ali_buy->updateBuy($buy) ;
-			
-			$this->listAction();
-		} else if(!empty($_GET['id'])){
-			$id = $_GET['id'] ;
-			$result = $this->ali_buy->selectBuyById($id) ;
-			$this->view->assign('buy',$result) ;
-			$this->view->display('buy_up.php');
-		}
-		$log .= "|".(int)(microtime(true)*1000-$start) ;
-		Log::logBusiness($log) ;
-	}
 }
 
 ?>
